@@ -384,6 +384,12 @@ jobs:
       - DEPLOY_ENV: uat
     steps: *deploy_steps
 
+  deploy_aws_dev:
+    <<: *container_config
+    environment:
+      - DEPLOY_ENV: dev_aws
+    steps: *deploy_steps
+
   github_release_osx:
     <<: *container_config
     steps:
@@ -522,6 +528,15 @@ workflows:
 
       - hodl:
           type: approval
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*$/
+
+      - deploy_aws_dev:
+          requires:
+            - linux_package
           filters:
             branches:
               ignore: /.*/
